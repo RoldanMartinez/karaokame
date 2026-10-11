@@ -1,0 +1,156 @@
+Quiero hacer un script basado en python y en modelos locales (tengo Ollama con Qwen3 4B) para generar canciones para la aplicación Ultrastar Worldparty.
+En la carpet config de esta carpeta hay un fichero cfg que describe la canción a usar. 
+Tiene diversos campos. 
+name es el nombre de la canción
+lead es la ruta a un mpl3 con la pista del intrumento principal, en este caso la voz.
+accompaniment es la ruta al acompañamiento.
+lyrics es la letra de la canción.
+language es el idioma de la canción.
+El resto de campos de momento no los usaremos.
+La pista de voz es generar el fichero txt de Ultrastar, bien alineado con el acompañamiento que será lo que suene en el karaoke.
+Esto se haría con el modelo Whisper para identificar palabras y CREPE para identifica notas, y quizás un modelo general tipo Qwen orquestando al resto de agentes para ver revisar que todo esta bien. Usa la carpeta doc para generar documentacion en formato Markdown y song/ para dejar los outputs (name.mp3 con el acompañamiento, name.txt el txt para Ultrastar, siend name el valos del cfg)
+Vamos a ver un ejemplo de lo que sería un txt para Ultrastar.
+
+#ARTIST:Celtas cortos
+#TITLE:La senda del tiempo
+#LANGUAGE:Español
+#GENRE:Folk
+#YEAR:1990
+#CREATOR:jmfb
+#MP3:Celtas cortos - La senda del tiempo.mp3
+#COVER:Celtas cortos - La senda del tiempo.jpg
+#VIDEO:Celtas cortos - La senda del tiempo.webm
+#BPM:287,18
+#GAP:8257,77
+: 0 3 6 A
+: 4 3 9 ve
+: 8 3 9 ces
+: 15 4 6 lle
+: 20 6 9 ga un
+: 28 3 6 mo
+: 32 3 9 men
+: 40 4 9 to en
+: 48 3 9 que
+- 57
+: 60 2 6 te ha
+: 64 2 9 ces
+E
+
+Etiquetas obligatorias
+
+#ARTIST
+Es el nombre del artista que interpreta la canción. En el caso de varios artistas, si la canción es española utilizaremos la unión "y" o "con", para el resto de idiomas usaremos "&" o "ft".
+Si la canción está hecha con el propósito exclusivo de publicitarse en una película / serie / anuncio, se pondrá en el nombre del artista el nombre de la película / serie o anuncio, (véase canciones disney). En los comentarios en la web deberá incluirse el intérprete que canta dicha canción.
+
+#TITLE
+Es el título de la canción. Opcionalmente, podemos añadir etiquetas entre paréntesis al final del título para versiones específicas como radio o televisión: (TV), (radio),(radio edit), etc.
+
+#LANGUAGE
+El idioma principal de la canción. Deberemos escribir el idioma en inglés: French, German, Italian, etc, a excepción de nuestro idioma que utilizaremos "Español". Las demás lenguas cooficiales del país también irán en Español, como el "Gallego", "Catalán" y "Vasco".
+
+#GENRE
+El género de la canción (Pop, Rock, etc). Es de gran utilidad para clasificar canciones siempre que se utilice de forma adecuada, ya que muchos programas de edición de canciones le ponen por defecto "Other" o el usuario que la esta haciendo le pone "Pop" aunque sea una rumba o flamenco.
+
+#YEAR
+Año en el que salió la canción al mercado, bien en un single o en un disco. Es una opción más por ejemplo para cantar en el modo grupo solo las canciones de un año.
+
+#CREATOR
+Nombre o apodo del creador de la canción con el que se registró en la web.
+
+#MP3
+Nombre del archivo de audio que contiene la canción. No tiene porque ser en formato en mp3, el Ultrastar admite más tipos. Se debe nombrar utilizando las etiquetas de #ARTIST y #TITLE.
+Ejemplo: #MP3:Celtas cortos - La senda del tiempo.mp3
+
+#COVER
+Carátula de la canción. Se deberá usar la del single en el que salió por primera vez la canción, en caso de no encontrararla se admitirá la del álbum. Se suele seguir la misma regla que para nombrar el archivo de audio, utilizaremos la etiqueta [CO] con un espacio entre en nombre y la etiqueta, EXCLUSIVAMENTE cuando no exista video, y tengamos imagen de fondo para diferenciarla. El tamaño de la carátula será en la medida de lo posible 500x500 y en formato .jpg (aunque el juego acepta otros)
+Ejemplo si no hay imagen de fondo:#COVER:Celtas cortos - La senda del tiempo.jpg.
+Ejemplo si hay imagen de fondo: #COVER:Celtas cortos - La senda del tiempo [CO].jpg
+
+#BPM
+Son los golpes por minuto (Beats Per Minute en inglés) de la canción, es decir la velocidad de la canción. A mayor valor mayor velocidad y consecuentemente a menor valor menor velocidad. Se calcula con ciertos programas directamente del archivo de audio, NUNCA establecer este valor manualmente. Para ajustar correctamente el BPM, su valor deberá ser el doble o duplicarlo tantas veces hasta que esté entre los 200 y 400. Fuera de esos límites no es aconsejable hacer una canción. Para ser más exactos podemos utilizar valores decimales.
+
+#GAP
+Indica el tiempo en milisegundos en que la letra de la canción comenzará. Ajustar bien este valor es vital para realizar correctamente una canción. NUNCA establecer este valor a mano, será calculado posteriormente por otros programas de edición. Cambiar este valor aleatoriamente provocará la desincronización de la canción.
+
+#MEDLEYSTARTBEAT
+Pertenece a la parte del "Medley" de la canción. También conocido como "versión corta". Se utiliza para establecer el comienzo del estribillo de la canción. Su valor debe expresarse en segundos. Aunque WorldParty intentará calcular automáticamente su valor, es recomendable establecerlo nosotros mismos. Más adelante explicaremos como establecerlo.
+
+#MEDLEYENDBEAT
+Su funcionamiento es igual que el anterior: #MEDLEYSTARTBEAT pero éste delimita el final del estribillo.
+
+
+Etiquetas opcionales
+
+
+#BACKGROUND
+Es la imagen que sale de fondo mientras se canta la canción. Deberá tener una resolución de 1920x1080p. Para diferenciar esta imagen de la de la carátula se utiliza [BG] al final del nombre del archivo. Si la canción contiene video, esta etiqueta no se deberá usar.
+Ejemplo: #BACKGROUND:Celtas cortos - La senda del tiempo [BG].jpg
+
+#VIDEO
+Aún estado como opcional, la etiqueta #BACKGROUND O #VIDEO una de las 2 debe ser obligatoria. La ponemos opcional, ya que dependerá del creador que etiqueta va a usar. La etiqueta #VIDEO hace referencia al video que se mostrará de fondo mientras se canta la canción. Puede ser en varios formatos, actualmente utilizamos preferentemente el "webm". La calidad del video deberá ser 1080p si es un video actual, si es inferior el máximo que acepte.
+Ejemplo: #VIDEO:Celtas cortos - La senda del tiempo.mp4
+
+#VIDEOGAP
+Es el número de segundos para forzar a un video que empiece antes o después. Se utiliza principalmente para sincronizar los movimientos de los labios. Si se quiere que el video empiece 5 segundos después respecto al tiempo original, se pondrá este valor, si por el contrario queremos que empiece 2 segundos antes (la pantalla estará en negro ya que no "existe" esa duración del video) se pone el valor en negativo: -2. Esta etiqueta solo afectará a la imagen del video, si queremos desplazar el audio deberemos usar la etiqueta GAP explicada anteriormente.
+Ejemplo para que el video empiece 3 segundos más tarde: #VIDEOGAP:3.
+Ejemplo para que el video empiece 7 segundos antes: #VIDEOGAP:-7.
+*La etiqueta VIDEOGAP, acepta valores decimales para una mayor precisión, por ejemplo: 2,3 o -5,8
+
+#EDITION
+Es la edición a la que pertenece la canción. Es lo que se utiliza para clasificar /agrupar las canciones que han sido convertidas desde los Singstar. *Ojo: La edición no se puede inventar, debe fomar parte de la lista de ediciones aceptadas en la web como por ejemplo "Rock Band", "SingStar: ABBA", o las que usamos propias en la web como "UltraStar Navidad" o "UltraStar dibujos animados".
+
+#DUETSINGERP(x)
+Indica el nombre del artista que canta la canción. Esta etiqueta es solamente utilizada para duetos (versión multijugador). La (x) representa el número asignado al artista.
+Ejemplo:
+#DUETSINGERP1:Luis Fonsi
+#DUETSINGERP2:Daddy Yankee
+
+#START
+Esta etiqueta forzará a empezar la canción en x segundos conjuntamente tanto en video como en audio. Sirve por ejemplo para saltar el comienzo de la canción donde no se escucha la música o hay una conversación en vez de cantar. Esta etiqueta está practicamente en desuso, es mejor cortar el video o la canción directamente, ya que es espacio en nuestro disco duro que estaremos desperdiciando.
+Ejemplo: #START:3
+
+#END
+Al igual que el START, esta etiqueta sirve para el efecto contrario, indicar en milisegundos cuando debe terminar una canción. Lo más correcto es eliminar directamente en el video y/o en el audio la parte final sin utilizar esta etiqueta, (solamente para aquellos casos donde la canción continua y la música terminó hace rato).
+
+#FIXER
+Si hemos reparado una canción originalmente de otra persona, podemos utilizar ésta etiqueta para definir la persona (nombre de usuario en la web) que ha reparado dicha canción.
+
+*Nota: Las etiquetas no tienen porqué ir en este orden, puedes establecer el orden que prefieras.
+
+*Nota2: Cuando escribimos el nombre de un artista o de un título, siempre debe de empezar por letra capital (mayúscula) el resto de palabras irán en minúscula. "No Escribáis Así". Sólo se permite usar las mayúsculas cuando es comienzo de una frase, o cuando es un nombre propio, u otras excepciones que contempla la Real Academia Española.
+
+*Nota3: Los archivos multimedia (COVER, MP3, VIDEO, BACKGROUND) deberán tener el mismo nombre que sus propias etiquetas del txt. La extensión del archivo deberá estar en minúscula siempre.
+Ejemplo MAL: #MP3:Celtas cortos - La senda del tiempo.MP3
+Ejemplo BIEN: #MP3:Celtas cortos - La senda del tiempo.mp3
+
+Después de las etiquetas comenzará la letra de la canción. Como vemos, está dividida en sílabas. Cuando hablamos o cantamos pronunciamos las palabras mediante sílabas. En la vida real, no podemos pronunciar palabras completas de golpe (a excepción de las palabras monosílabas). El juego funcionará de la misma manera. Además junto a éstas sílabas aparecen unos caracteres y unos números raros que vamos a ver a continuación.
+
+Antes de empezar a profundizar un poco más. Nos tenemos que imaginar en nuestra mente un pentagrama, con sus notas, (corcheas, negras, redondas...). Cada nota musical se le asigna una sílaba de la letra. Para nosotros que tenemos que plasmar esa información en el juego, no existen ni negras, ni blancas, ni corcheas... utilizaremos los "cuadrados" (no, no hablamos de la "cuadrada"). Si sigues imaginando el pentagrama, sustituye esa nota dibujando un cuadrado. Evidentemente dependiendo de la línea del pentagrama donde lo situemos más arriba o más abajo, el sonido será más agudo o más grave, a esto lo llamamos "tono". Para saber que tipo de nota estoy usando, si una negra o una blanca (por ejemplo) lo que hago es alargar el cuadrado, convirtiéndose en un rectángulo. Es decir, si suponemos que una "negra" es un cuadrado, si junto 2 cuadrados me formarán una "blanca", nosotros al estirar o reducir el cuadrado lo llamamos "duración" del cuadrado.
+
+Perfecto, analicemos ahora la letra, podemos apreciar que hay 3 números por cada sílaba.
+Ejemplo:
+: 0 3 6 A
+
+El primer número, el 0, representa la ubicación de esa sílaba a lo largo del "pentagrama", a izquierda o a derecha.
+
+El segundo número, el 3, representa la duración del "cuadrado" (de la nota)
+
+El tercer número, el 6 representa el "tono" del "cuadrado" (de la nota)
+
+En la parte izquierda de los números podemos encontrarnos los siguientes caracteres:
+
+: -> Indica que la sílaba es cantable con una puntuación normal.
+* -> Indica que la sílaba es cantable y tiene una puntuación dorada (puntuación más elevada)
+F -> Indica que la sílaba no será puntuada, y puedes cantarla a tu estilo.
+R -> Indica que la sílaba es cantable pero no tiene en cuenta el tono (modo Rap)
+G -> Indica que la sílaba es cantable y tiene una puntuación dorada (puntuación más elevada), pero no tiene en cuenta el tono (modo Rap)
+
+La E que se encuentra al final de la canción, representa eso mismo, el final de la canción.
+
+Además de estos símbolos también podemos encontrarnos con el (-) sin los paréntesis. Indicará al programa que pase a la siguiente línea de la canción.
+
+¿Qué es una línea de canción?
+
+Toda la letra la dividimos en líneas para que quepa en la pantalla. Cada línea no debería superar los 45 caracteres, pero de eso ya hablaremos más adelante.
+
+Por último, los cambios de tonos son representados con la virgulilla ( ~ ) van siempre al final de la sílaba.

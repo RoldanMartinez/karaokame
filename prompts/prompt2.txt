@@ -1,0 +1,3 @@
+El siguiente script, modulame, analizará la pista lead de una cancion. Hay que pasarle la ruta al config.
+Sacará la distribucion de notas musicales, estimando la tonalidad, que la mostrará en una pantalla dejando la posibilidad al usuario de tansponer X semitonos arriba o abajo.
+Transpondra los mp3 esa cantidad, y tambien generará el txt de Ultrastar actualizado, pero añadiendo _X al nombre de los ficheros generados. 

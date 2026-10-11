@@ -1,0 +1,5 @@
+El siguiente paso es separar la voz del acompañamiento. Te he dejado una nueva canción en config/.
+Tiene casi todos los campos vacios, pero he añadido un nuevo campo audio que es la ruta al fichero con la canción completa.
+Para extraer la voz, yo uso ultimatevocalremovergui. Te he dejado una copia del repositorio. Usa varios modelos. En particular, para voz yo uso el de la imagen ultimate.png con esa configuración. Quiero que hagas un nuevo script, vocalizame.py, que haga lo mismo pero leyendo directamente el cfg, generando los mp3 de voz y acompañamiento, y actualizando el cfg.
+Además, debe revisar si el mp3 contenia video, y debe extraerlo a un mp4, y añadir la entrada video al cfg.
+Te he dejado en la carpeta tmp/ lo que saldría de extraer la voz de esa canción por si quieres chequear el nuevo script.

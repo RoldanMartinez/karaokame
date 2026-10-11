@@ -1,0 +1,9 @@
+# torch y torchaudio se instalan aparte (CPU): ver doc/uso.md
+faster-whisper
+torchcrepe
+librosa
+soundfile
+requests
+pyphen
+pytest
+reportlab
